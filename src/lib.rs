@@ -1,7 +1,6 @@
-use std::fs::File;
-use std::io::prelude::*;
+mod vec3;
 
-fn generate_ppm_string() -> String {
+pub fn generate_ppm_string() -> String {
     let x_pixels = 200;
     let y_pixels = 100;
     let format = "P3";
@@ -17,9 +16,12 @@ fn generate_ppm_string() -> String {
 
     for j in (0..y_pixels).rev() {
         for i in 0..x_pixels {
+            // 0 ~ 1.0
             let r = i as f64 / x_pixels as f64;
             let g = j as f64/ y_pixels as f64;
             let b = 0.2;
+
+            // 0 ~ 255
             let ir = (255.99 * r) as i64;
             let ig = (255.99 * g) as i64;
             let ib = (255.99 * b) as i64;
@@ -30,9 +32,12 @@ fn generate_ppm_string() -> String {
     return header + "\n" + &body;
 }
 
-fn main() -> std::io::Result<()> {
-    let ppm_file_content = generate_ppm_string();
-    let mut file =  File::create("image.ppm")?;
-    file.write_all(ppm_file_content.as_bytes())?;
-    Ok(())
-}
+
+
+
+
+
+pub struct XYZ {}
+
+
+pub struct RGB {}
