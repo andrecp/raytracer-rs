@@ -46,7 +46,7 @@ fn color(ray: &ray::Ray) -> vec3::RGB {
 ///
 /// Entry point for our experiments! Read https://en.wikipedia.org/wiki/Netpbm for more information
 /// on the ppm format.
-pub fn generate_ppm_string() -> String {
+pub fn generate_ppm_image() -> String {
     // Set up the "scene"
     let x_pixels = 200;
     let y_pixels = 100;
