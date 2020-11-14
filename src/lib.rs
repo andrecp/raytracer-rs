@@ -6,8 +6,12 @@ mod ray;
 
 /// Blends white and blue depending on the up/down of the Y coordinate.
 fn color(ray: &ray::Ray) -> vec3::RGB {
+    // Make it an unit vector so that -1 < y < 1.
     let unit_direction = vec3::XYZ::new(vec3::unit_vector(ray.direction()));
+
+    // When t is 1.0 we have blue, then t is 0.0 we have white.
     let t = 0.5 * (unit_direction.y() + 1.0);
+
     return vec3::RGB::new(
         vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) +
         vec3::Vec3::new(0.5, 0.7, 1.0) * t);
