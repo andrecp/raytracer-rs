@@ -1,10 +1,11 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign, Div, DivAssign, Mul, MulAssign, Index, IndexMut, Neg};
 
-
+/// Represents an RGB pixel.
 pub struct RGB {
     data: Vec3
 }
 
+/// RGB Vector implementation, mostly a wrapper around a `Vec3`.
 impl RGB {
     pub fn zero() -> RGB {
         RGB {
@@ -12,9 +13,9 @@ impl RGB {
         }
     }
 
-    pub fn new(v0: f64, v1: f64, v2: f64) -> RGB {
+    pub fn new(vec: Vec3) -> RGB {
         RGB {
-            data: Vec3::new(v0, v1, v2)
+            data: vec
         }
     }
 
@@ -31,10 +32,12 @@ impl RGB {
     }
 }
 
+/// Represents a XYZ point.
 pub struct XYZ {
     data: Vec3
 }
 
+/// XYZ Vector implementation, mostly a wrapper around a `Vec3`.
 impl XYZ {
     pub fn zero() -> XYZ {
         XYZ {
@@ -61,15 +64,21 @@ impl XYZ {
         return self.data[2]
     }
 }
+
+/// A 3D Vector.
 pub struct Vec3 {
     vec3: Vec<f64>
 }
 
+/// An unit vector, the spatial representation of the direction of a vector.
 pub fn unit_vector(vec: &Vec3) -> Vec3 {
     return vec / vec.vec3.len() as f64;
 }
 
+/// A 3D Vector.
 impl Vec3 {
+
+    /// Creates a 3D Vector with 0 in all axis.
     pub fn zero() -> Vec3 {
         let mut v = Vec::with_capacity(3);
         v.push(0.0);
@@ -80,6 +89,7 @@ impl Vec3 {
         }
     }
 
+    /// Creates a 3D Vector with `v0`, `v1` and `v2` values.
     pub fn new(v0: f64, v1: f64, v2: f64) -> Vec3 {
         let mut v = Vec::with_capacity(3);
         v.push(v0);
@@ -90,6 +100,7 @@ impl Vec3 {
         }
     }
 
+    //// Create an unit vector from the current 3d vector.
     pub fn make_unit_vector(&mut self) {
         let k = 1.0 / (self[0] * self[0] + self[1] * self[1] + self[2] * self[2]).sqrt();
         self[0] *= k;
@@ -97,10 +108,17 @@ impl Vec3 {
         self[2] *= k;
     }
 
+    /// Dot multiplication of two 3d vectors.
+    /// https://www.mathsisfun.com/algebra/vectors-dot-product.html has a good visual representation.
+    /// A scalar! Seems to be useful to find the angle between two vectors.
+    /// https://betterexplained.com/articles/vector-calculus-understanding-the-dot-product/
     pub fn dot(&self, other: &Vec3) -> f64 {
         return self[0] * other[0] + self[1] * other[1] + self[2] * other[2];
     }
 
+    /// A cross product of two vectors in 3D, the intersection between them in 2d is the crossing point where
+    /// a 90 degrees angle is created to each of them.
+    /// https://www.mathsisfun.com/algebra/vectors-cross-product.html has a good visual representation.
     pub fn cross(&self, other: &Vec3) -> Vec3 {
         return Vec3::new(
             self[1] * other[2] - self[2] * other[1],
