@@ -19,6 +19,12 @@ impl RGB {
         }
     }
 
+    pub fn new_r_g_b(r: f64, g: f64, b: f64) -> RGB {
+        RGB {
+            data: Vec3::new(r, g, b)
+        }
+    }
+
     pub fn r(&self) -> f64 {
         return self.data[0]
     }
@@ -51,6 +57,15 @@ impl XYZ {
         }
     }
 
+    pub fn new_x_y_z(x: f64, y: f64, z: f64) -> XYZ {
+        XYZ {
+            data: Vec3::new(x, y, z)
+        }
+    }
+
+    pub fn vec3(&self) -> &Vec3 {
+        return &self.data;
+    }
 
     pub fn x(&self) -> f64 {
         return self.data[0]
@@ -347,6 +362,14 @@ impl Sub<Vec3> for Vec3 {
     type Output = Vec3;
 
     fn sub(self, other: Self) -> Self {
+        return Vec3::new(self[0] - other[0], self[1] - other[1], self[2] - other[2]);
+    }
+}
+
+impl<'a, 'b> Sub<&'b Vec3> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: &'b Vec3) -> Vec3 {
         return Vec3::new(self[0] - other[0], self[1] - other[1], self[2] - other[2]);
     }
 }

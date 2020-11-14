@@ -4,8 +4,33 @@
 mod vec3;
 mod ray;
 
+struct Sphere {
+    center: vec3::XYZ,
+    radius: f64
+}
+
+/// Verifies if the ray hits a sphere.
+/// Math!
+fn hits_sphere(sphere: &Sphere, ray: &ray::Ray) -> bool {
+    let oc = ray.origin() - &sphere.center.vec3();
+    let a = ray.direction().dot(ray.direction());
+    let b = 2.0 * ray.direction().dot(&oc);
+    let c = oc.dot(&oc) - sphere.radius * sphere.radius;
+    let discriminant = b * b - 4.0 * a * c;
+    return discriminant > 0.0;
+}
+
 /// Blends white and blue depending on the up/down of the Y coordinate.
 fn color(ray: &ray::Ray) -> vec3::RGB {
+    let sphere = Sphere{
+        center: vec3::XYZ::new_x_y_z(0.0, 0.0, -1.0),
+        radius: 0.6
+    };
+
+    if hits_sphere(&sphere, ray) {
+        return vec3::RGB::new_r_g_b(1.0, 0.0, 0.0);
+    }
+
     // Make it an unit vector so that -1 < y < 1.
     let unit_direction = vec3::XYZ::new(vec3::unit_vector(ray.direction()));
 

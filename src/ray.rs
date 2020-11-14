@@ -5,7 +5,7 @@ pub struct Ray<'a> {
     B: &'a Vec3
 }
 
-/// Implements functionality relayed to a Ray.
+/// Implements functionality related to a Ray.
 impl<'a> Ray<'a> {
 
     /// Creates a new Ray between points A and B.
