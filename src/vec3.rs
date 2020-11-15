@@ -81,6 +81,7 @@ impl XYZ {
 }
 
 /// A 3D Vector.
+#[derive(Clone)]
 pub struct Vec3 {
     vec3: Vec<f64>
 }

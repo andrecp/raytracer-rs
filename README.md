@@ -17,4 +17,6 @@ The camera is the "eye".
 
 # TODO
 
-* How to make Vec3 a generic trait with default implementations ?!
+* How to make Vec3 a generic trait with default implementations and have RGB and XYZ have its default?!
+* Write tests.
+* Add more rust docstrings.

@@ -3,33 +3,25 @@
 
 mod vec3;
 mod ray;
+mod sphere;
+mod hitable;
+mod hitable_list;
 
-struct Sphere {
-    center: vec3::XYZ,
-    radius: f64
-}
+use hitable::Hitable;
 
-/// Verifies if the ray hits a sphere.
-/// Math!
-fn hits_sphere(sphere: &Sphere, ray: &ray::Ray) -> bool {
-    let oc = ray.origin() - &sphere.center.vec3();
-    let a = ray.direction().dot(ray.direction());
-    let b = 2.0 * ray.direction().dot(&oc);
-    let c = oc.dot(&oc) - sphere.radius * sphere.radius;
-    let discriminant = b * b - 4.0 * a * c;
-    return discriminant > 0.0;
-}
 
-/// Blends white and blue depending on the up/down of the Y coordinate.
-fn color(ray: &ray::Ray) -> vec3::RGB {
-    let sphere = Sphere{
-        center: vec3::XYZ::new_x_y_z(0.0, 0.0, -1.0),
-        radius: 0.6
-    };
+/// Calculates the color in RGB of where the ray hits.
+fn color(ray: &ray::Ray, hitable_world: &hitable_list::HitableList) -> vec3::RGB {
 
-    if hits_sphere(&sphere, ray) {
-        return vec3::RGB::new_r_g_b(1.0, 0.0, 0.0);
+    let mut hit_record = hitable::HitRecord::new();
+    if hitable_world.hit(&ray, 0.0, std::f64::MAX, &mut hit_record) {
+        let x_normal = hit_record.normal[0] + 1.0;
+        let y_normal = hit_record.normal[1] + 1.0;
+        let z_normal = hit_record.normal[2] + 1.0;
+        let vec3d = vec3::Vec3::new(x_normal, y_normal, z_normal) * 0.5;
+        return vec3::RGB::new(vec3d);
     }
+    // No hits, background color which is a blend of blue and white.
 
     // Make it an unit vector so that -1 < y < 1.
     let unit_direction = vec3::XYZ::new(vec3::unit_vector(ray.direction()));
@@ -48,14 +40,30 @@ fn color(ray: &ray::Ray) -> vec3::RGB {
 /// on the ppm format.
 pub fn generate_ppm_image() -> String {
     // Set up the "scene"
-    let x_pixels = 200;
-    let y_pixels = 100;
+    let x_pixels = 400;
+    let y_pixels = 200;
     let max_rgb_range = 255;
 
+    // Where the camera is pointed to.
     let lower_left_corner = vec3::Vec3::new(-2.0, -1.0, -1.0);
     let horizontal = vec3::Vec3::new(4.0, 0.0, 0.0);
     let vertical = vec3::Vec3::new(0.0, 2.0, 0.0);
+
+    // Where the camera is.
     let origin = vec3::Vec3::zero();
+
+    // Add objects to the "scene"
+    let sphere1 = sphere::Sphere::new(
+        vec3::XYZ::new(vec3::Vec3::new(0.0, 0.0, -1.0)),
+        0.5);
+
+    let sphere2 = sphere::Sphere::new(
+        vec3::XYZ::new(vec3::Vec3::new(0.0, -100.5, -1.0)),
+        100.0);
+
+    let mut world = hitable_list::HitableList::new();
+    world.add(Box::new(sphere1));
+    world.add(Box::new(sphere2));
 
     // Header of ppm file
     let format = "P3";
@@ -72,12 +80,12 @@ pub fn generate_ppm_image() -> String {
             // Calculate the direction of the ray.
             let u = i as f64 / x_pixels as f64;
             let v = j as f64/ y_pixels as f64;
-            let direction = &lower_left_corner + &(&horizontal * u) + &vertical * v;
+            let direction = (&lower_left_corner + &(&horizontal * u)) + &vertical * v;
 
             // The ray goes from the camera origin (0, 0, 0) towards the scene.
             // the direction moves as our for loops goes through x, y.
             let ray = ray::Ray::new(&origin, &direction);
-            let color = color(&ray);
+            let color = color(&ray, &world);
 
             // scale back to 0 ~ 255.
             let ir = (255.99 * color.r()) as i64;

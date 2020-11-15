@@ -26,7 +26,13 @@ impl<'a> Ray<'a> {
         return self.B;
     }
 
-    /// Calculates the point at the parameter.
+    /// Calculates the point at the parameter T.
+    /// The parameter T is the position along a line in 3D between ray origin and direction.
+    /// it moves the point along the line.
+    ///
+    ///t=-2,-1,0,1,2,3,4
+    /// <------====--->
+    ///        A  B
     pub fn point_at_parameter(&self, t: f64) -> Vec3 {
         return self.A + &(self.B * t);
     }
