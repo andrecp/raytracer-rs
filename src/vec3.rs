@@ -36,6 +36,10 @@ impl RGB {
     pub fn b(&self) -> f64 {
         return self.data[2]
     }
+
+    pub fn vec3(&self) -> &Vec3 {
+        return &self.data;
+    }
 }
 
 /// Represents a XYZ point.
