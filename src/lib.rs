@@ -78,7 +78,7 @@ pub fn generate_ppm_image() -> String {
     for j in (0..y_pixels).rev() {
         for i in 0..x_pixels {
 
-            // For anti-alising we get 100 samples for each pixel and avg
+            // For antialiasing we get 100 samples for each pixel and avg
             // It blends the background and the foreground.
             let mut col = vec3::Vec3::zero();
             for _ in 0..number_of_samples {
